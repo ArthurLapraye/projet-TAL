@@ -4,8 +4,12 @@ import re
 import os
 from distances import levenshtein
 
+adr = "/home/arthur/programmes/python/projet/"s
+spatab = adr+ "mcr/wn-data-spa.tab"
+itatab = adr+ "ita/wn-data-ita.tab"
+portab = adr+ "por/wn-data-por.tab"
 
-files=[("spa","mcr/wn-data-spa.tab"),("ita","ita/wn-data-ita.tab"),("por","por/wn-data-por.tab")]
+files=[("spa",spatab),("ita",itatab),("por",portab)]
 
 trips=dict()
 
@@ -21,4 +25,4 @@ for tag,elem in files:
 				trips[sem]=trips.get(sem,{})
 				trips[sem][tag]=trips[sem].get(tag,[])+[spaces.sub("_",forme[:-1])]
 
-				
+
