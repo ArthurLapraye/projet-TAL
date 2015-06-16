@@ -22,5 +22,5 @@ def levenshtein(s,t):
 		return min([levenshtein(s[:-1],t)+1,levenshtein(s,t[:-1])+1,levenshtein(s[:-1],t[:-1]) + cost])
 
 def avglev(s,t):
-	d = min(len(s),len(t))
-	return levenshtein(d
+	d = min(len(s),len(t)) + 0.0
+	return levenshtein(s,t)/d
