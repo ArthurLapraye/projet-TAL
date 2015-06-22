@@ -2,7 +2,8 @@
 
 import re
 import os
-from distances import levenshtein
+import sys
+from distances import levenshtein,phoneit
 
 adr = "/home/arthur/programmes/python/projet/"
 spatab = adr+ "mcr/wn-data-spa.tab"
@@ -14,18 +15,36 @@ files=[("spa",spatab),("ita",itatab),("por",portab)]
 
 trips=dict()
 
+phones=set()
+phstring=""
+tabz=re.compile(r"\t")
+spaces=re.compile(r" ")
+paren=re.compile(r"\([^)]*\)")
+
 for lang,elem in files:
-	tabz=re.compile(r"\t")
-	spaces=re.compile(r" ")
+	
 	with open(elem) as f:
 		for line in f:
 			if line[0] == "#":
 				continue
 			else:
 				[sem,_,forme]=tabz.split(line)
+				forme=forme.rstrip()
+				z=paren.sub("",forme)
+				if len(z) > 0:
+					forme=z
+				else:
+					forme=re.sub(r"[)(]*","",forme)
+				
 				if not " " in forme and forme[0] not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+					#forme=phoneit(forme,lang)
 					trips[lang]=trips.get(lang,{})
-					trips[lang][sem]=trips[lang].get(sem,[])+ [forme[:-1]]
+					trips[lang][sem]=trips[lang].get(sem,[])+ [forme]
+					#phstring += phoneit(forme,lang)
+					
+#print(str(set(phstring)))
+
+#sys.exit(0)
 
 print("a")
 intersection = set(trips["spa"].keys()) & set(trips["ita"].keys()) & set(trips["por"].keys()) 
@@ -48,8 +67,8 @@ with open(engtab) as en:
 			continue
 		else:
 			[sem,_,forme]=tabz.split(line)
-			if sem in intersection:
-				glose[sem]=forme[:-1]
+			if sem in intersection and sem not in glose:
+				glose[sem]=forme.strip()
 
 print("d")
 
