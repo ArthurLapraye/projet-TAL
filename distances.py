@@ -4,8 +4,9 @@ import os
 import re
 import phonemes as p
 
-rem=re.compile(r"['ˈˈˌ]*")
-subs=re.compile(r"(.)ː")
+
+rem=re.compile(r"['ˈˈˌː ̃]*")
+subs=re.compile(r"tʃ")
 
 def memoize(f):
 	memo = {}
@@ -21,7 +22,9 @@ def phoneit(mot,lang):
 	commande = "espeak \"" + mot + "\" -q --ipa -v " + subst[lang]
 	p = os.popen(commande).read()
 	p=rem.sub("",p)
-	p=subs.sub(r"\1\1",p)
+	p=re.sub("tʃ","ʧ",p)
+	p=re.sub("dʒ","ʤ",p)
+	#p=subs.sub(r"\1\1",p)
 	#print(p.rstrip())
 	
 	return p.strip()
@@ -34,7 +37,9 @@ def dist(a,b):
 	elif a in p.phonemes and b in p.phonemes:
 		return p.dist(a,b)
 	else:
+		print("phoneme inconnu : " + a + " " + b +"\n")
 		raise ValueError
+		
 		#return MAXCOST
 
 def levenshtein(s, t):
@@ -92,5 +97,9 @@ def phlevenshtein(s, t):
 """
 
 def avglev(s,t):
-	d = min(len(s),len(t)) + 0.0
-	return levenshtein(s,t)/d
+	try:
+		d = min(len(s),len(t)) + 0.0
+		return phlevenshtein(s,t)/d
+	except ZeroDivisionError:
+		return None
+

@@ -12,6 +12,10 @@ with open("/home/arthur/programmes/python/projet/cognates+lat.txt") as f:
 		else:
 			[es,it,_,pt] = tabz.split(line)
 			pt=pt[:-1]
-			print(pt+"\t"+es+"\t"+it+" "+str(avglev(es,pt))+"/"+str(avglev(es,it))+"/"+str(avglev(it,pt)))
+			try:
+				print(pt+"\t"+es+"\t"+it+" "+str(avglev(es,pt))+"/"+str(avglev(es,it))+"/"+str(avglev(it,pt)))
+			except ValueError:
+				input()
+				pass
 
 

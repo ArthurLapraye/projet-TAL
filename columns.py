@@ -21,6 +21,10 @@ tabz=re.compile(r"\t")
 spaces=re.compile(r" ")
 paren=re.compile(r"\([^)]*\)")
 
+capinterdit="ABCDEFGHIJKLMNOPQRSTUVWXYZΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρςστυφχψω"
+
+print("Extraction des lemmes...")
+
 for lang,elem in files:
 	
 	with open(elem) as f:
@@ -36,30 +40,35 @@ for lang,elem in files:
 				else:
 					forme=re.sub(r"[)(]*","",forme)
 				
-				if not " " in forme and forme[0] not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-					#forme=phoneit(forme,lang)
+				
+				if not " " in forme and forme[0] not in capinterdit:
 					trips[lang]=trips.get(lang,{})
 					trips[lang][sem]=trips[lang].get(sem,[])+ [forme]
 					#phstring += phoneit(forme,lang)
+					#print(forme)
 					
 #print(str(set(phstring)))
 
 #sys.exit(0)
 
-print("a")
+print("Création de triplets de sens")
 intersection = set(trips["spa"].keys()) & set(trips["ita"].keys()) & set(trips["por"].keys()) 
 
-print("b")
+print("Phonétisation")
 
-z=dict()
+fonetik=dict()
+orthogr=dict()
+
 glose=dict()
 
 for synset in intersection:
-	z[synset]={}
+	fonetik[synset]={}
+	orthogr[synset]={}
 	for l in trips:
-		z[synset][l]=trips[l][synset]
+		fonetik[synset][l]=[phoneit(x,l) for x in trips[l][synset] ]
+		orthogr[synset][l]=[x for x in trips[l][synset] ]
 
-print("c")
+print("Extraction de la glose")
 
 with open(engtab) as en:
 	for line in en:
@@ -70,21 +79,33 @@ with open(engtab) as en:
 			if sem in intersection and sem not in glose:
 				glose[sem]=forme.strip()
 
-print("d")
+print("Écriture de la sortie")
 
-with open("/tmp/columns","w") as cols:
+with open(adr+"phono","w") as cols:
 	y=""
 	for synset in intersection:
 		y+=glose[synset]
-		for l in z[synset]:
+		for l in ["por","spa","ita"]:
 			y += "\t" 
-			for m in z[synset][l]:
+			for m in fonetik[synset][l]:
 				y += m + "; "
 		y += "\n"
 	
 	cols.write(y)
 
-print("e")
+with open(adr+"orthogr","w") as cols:
+	y=""
+	for synset in intersection:
+		y+=glose[synset]
+		for l in ["por","spa","ita"]:
+			y += "\t" 
+			for m in orthogr[synset][l]:
+				y += m + "; "
+		y += "\n"
+	
+	cols.write(y)
+
+print("Fin")
 
 
 
