@@ -65,7 +65,7 @@ for synset in intersection:
 	fonetik[synset]={}
 	orthogr[synset]={}
 	for l in trips:
-		fonetik[synset][l]=[phoneit(x,l) for x in trips[l][synset] ]
+		fonetik[synset][l]=[ paren.sub("",phoneit(x,l)) for x in trips[l][synset] ]
 		orthogr[synset][l]=[x for x in trips[l][synset] ]
 
 print("Extraction de la glose")

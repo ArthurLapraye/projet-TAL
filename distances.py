@@ -43,7 +43,6 @@ def dist(a,b):
 		#return MAXCOST
 
 def levenshtein(s, t):
-		''' From Wikipedia article; Iterative with two matrix rows. '''
 		if s == t: return 0
 		elif len(s) == 0: return len(t)
 		elif len(t) == 0: return len(s)
@@ -61,8 +60,7 @@ def levenshtein(s, t):
  
 		return v1[len(t)]
 
-def phlevenshtein(s, t):
-		''' From Wikipedia article; Iterative with two matrix rows. '''
+def phlev(s, t):
 		if s == t: return 0
 		elif len(s) == 0: return len(t)*MAXCOST
 		elif len(t) == 0: return len(s)*MAXCOST
@@ -97,9 +95,11 @@ def phlevenshtein(s, t):
 """
 
 def avglev(s,t):
-	try:
-		d = min(len(s),len(t)) + 0.0
-		return phlevenshtein(s,t)/d
-	except ZeroDivisionError:
-		return None
+	d = min(len(s),len(t)) + 0.0
+	return levenshtein(s,t)/d
+
+def phavglev(s,t):
+	d = 100*min(len(s),len(t)) + 0.0
+	return phlev(s,t)/d
+
 
